@@ -18,6 +18,8 @@ type ExtendedMatrix = record
       Self.columnX := columnX;
     end;
     procedure Print;
+    procedure GaussianElimination(pivotIndexes: (integer, integer));
+    procedure DeleteColumn(index: integer);
 end;
 
 function det(
@@ -52,6 +54,38 @@ begin
       Write(self.baseMatrix[i, j]:charSpace:2);
     Writeln();
   end;
+end;
+
+procedure ExtendedMatrix.GaussianElimination(pivotIndexes: (integer, integer));
+var
+  pivotRow, pivotColumn: integer;
+  pivot: real;
+begin
+  (pivotRow, pivotColumn) := pivotIndexes;
+  pivotColumn += 1; // первый столбец содержит левую часть уравнения
+  pivot := self.baseMatrix[pivotRow, pivotColumn];
+  var newMatrix := new real[Length(self.baseMatrix, 0) - 1, Length(self.baseMatrix, 1) - 1];
+  
+  // заполнение всей матрицы значениями 1 / разр-ий эл-т * определитель
+  for var i := 0 to Length(self.baseMatrix, 0) - 1 do
+    for var j := 0 to Length(self.baseMatrix, 1) - 1 do
+      newMatrix[i,j] := det(self.baseMatrix, i, pivotRow, j, pivotColumn) / pivot;
+
+  // заполнение строки                     
+  for var i := 0 to Length(self.baseMatrix, 1) - 1 do
+    newMatrix[pivotRow, i] := self.baseMatrix[pivotRow, i] / pivot;
+  
+  // заполнение столбца
+  for var i := 0 to Length(self.baseMatrix, 0) - 1 do
+    newMatrix[i, pivotColumn] := -self.baseMatrix[i, pivotColumn] / pivot;
+  
+  // вычисление элемента на месте разрешающего элемента
+  newMatrix[pivotRow, pivotColumn] := 1 / pivot;
+end;
+
+procedure ExtendedMatrix.DeleteColumn(index: integer);
+begin
+  
 end;
 
 function det(

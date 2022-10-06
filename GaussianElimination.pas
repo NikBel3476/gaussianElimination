@@ -61,10 +61,10 @@ begin
     
     
     // проверка найден ли ответ
-    for var i := 0 to Length(matrix, 0) - 1 do
-      for var j := 1 to Length(matrix, 0) - 1 do
-      begin
-        
-      end;
+//    for var i := 0 to Length(matrix, 0) - 1 do
+//      for var j := 1 to Length(matrix, 0) - 1 do
+//      begin
+//        
+//      end;
   end;
 end.

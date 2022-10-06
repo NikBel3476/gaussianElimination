@@ -10,7 +10,8 @@ procedure printMatrix(matrix: array[,] of real);
 begin
   for var i := 0 to Length(matrix, 0) - 1 do
   begin
-    for var j := 0 to Length(matrix, 1) - 1 do
+    Write(matrix[i, 0]:7:2, '│');
+    for var j := 1 to Length(matrix, 1) - 1 do
       Write(matrix[i, j]:7:2, ' ');
     Writeln();
   end;     
@@ -21,7 +22,7 @@ var
   a, b: integer;
 begin
   Readln(a, b);
-  Result := (a, b);
+  Result := (a - 1, b) // первая столбец является левой частью уравнений (b - 1 + 1 = b)
 end;
   
 end.

@@ -22,6 +22,8 @@ type ExtendedMatrix = record
     procedure DeleteColumn(index: integer);
 end;
 
+function copyMatrix(matrix: array[,] of real): array[,] of real;
+function rowSum(matrix: array[,] of real; row: integer): real;
 function det(
   matrix: array[,] of real;
   topRow: integer;
@@ -29,7 +31,7 @@ function det(
   leftColumn: integer;
   rightColumn: integer
 ): real;
-function findFirsNonZeroElementIndexes(matrix: array[,] of real): (integer, integer);
+function findFirstNonZeroElementIndexes(matrix: array[,] of real): (integer, integer);
 function gaussianElimination(
   matrix: array[,] of real;
   baseElementIndexes: (integer, integer)
@@ -37,6 +39,7 @@ function gaussianElimination(
 function deleteColumn(matrix: array[,] of real; column: integer): array[,] of real;
 procedure rowSwap(matrix: array[,] of real; row1, row2: integer; column: integer);
 function rank(matrix: array[,] of real): integer;
+procedure printAnswer(matrix: ExtendedMatrix);
 
 implementation
 
@@ -90,6 +93,24 @@ begin
   
 end;
 
+function copyMatrix(matrix: array[,] of real): array[,] of real;
+var
+  rowsAmount := matrix.GetLength(0);
+  columnsAmount := matrix.GetLength(1);
+begin
+  Result := new real[rowsAmount, columnsAmount];
+  for var i := 0 to rowsAmount - 1 do
+    for var j := 0 to columnsAmount - 1 do
+      Result[i,j] := matrix[i,j];
+end;
+
+function rowSum(matrix: array[,] of real; row: integer): real;
+begin
+  Result := 0;
+  for var i := 0 to matrix.GetLength(1) - 1 do
+    Result += matrix[row, i];
+end;
+
 function det(
   matrix: array[,] of real;
   topRow: integer;
@@ -104,7 +125,7 @@ begin
             matrix[topRow, rightColumn] * matrix[bottomRow, leftColumn];
 end;
 
-function findFirsNonZeroElementIndexes(matrix: array[,] of real): (integer, integer);
+function findFirstNonZeroElementIndexes(matrix: array[,] of real): (integer, integer);
 begin
   for var i := 0 to Length(matrix, 0) - 1 do
     for var j := 0 to Length(matrix, 1) - 1 do
@@ -213,6 +234,33 @@ begin
   end;
   
   Result := rank;
-end;  
+end;
 
+procedure printAnswer(matrix: ExtendedMatrix);
+var
+  currentSymbolAscii := 97;
+  rootSymbols: array of char;
+begin
+  rootSymbols := new char[matrix.rowX.Length];
+  for var i := 0 to matrix.rowX.Length - 1 do
+  begin
+    rootSymbols[i] := char(currentSymbolAscii + i);
+    Writeln(matrix.rowX[i].Substring(1), '= ', rootSymbols[i]);
+  end;
+  for var i := 0 to matrix.columnX.Length - 1 do
+    if (matrix.columnX[i] <> '0=') then
+    begin
+      Write(matrix.columnX[i], ' ', matrix.baseMatrix[i, 0], ' ');
+      for var j := 1 to matrix.baseMatrix.GetLength(1) - 1 do
+      begin
+        var matrixElement := -matrix.baseMatrix[i, j];
+        if (matrixElement = -1) then
+          Write('-')
+        else
+          Write(matrixElement);
+        Write(rootSymbols[j - 1], ' ');
+      end;
+      Writeln();
+    end;
+end;  
 end.

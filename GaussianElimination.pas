@@ -39,6 +39,8 @@ begin
     (2.0, 1.0, 0.0, -1.0)
   );
   
+  Writeln('Rank: ', rank(matrixExample1));
+  
   resultMatrix := matrixExample2;
   
   Writeln('Исходная матрица');

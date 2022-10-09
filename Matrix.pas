@@ -35,6 +35,8 @@ function gaussianElimination(
   baseElementIndexes: (integer, integer)
 ): array[,] of real;
 function deleteColumn(matrix: array[,] of real; column: integer): array[,] of real;
+procedure rowSwap(matrix: array[,] of real; row1, row2: integer; column: integer);
+function rank(matrix: array[,] of real): integer;
 
 implementation
 
@@ -152,5 +154,65 @@ begin
       else
         Result[i, j] := matrix[i, j];
 end;
+
+procedure rowSwap(matrix: array[,] of real; row1, row2: integer; column: integer);
+var
+  temp: real;
+begin
+  for var i := 0 to column do
+  begin
+    temp := matrix[row1,i];
+    matrix[row1,i] := matrix[row2,i];
+    matrix[row2,i] := temp;
+  end;
+end;
+
+function rank(matrix: array[,] of real): integer;
+var
+  rowsAmount := matrix.GetLength(0);
+  columnsAmount := matrix.GetLength(1);
+begin
+  var rank := Min(rowsAmount, columnsAmount);
+  
+  var row := 0;
+  while (row < rank) do
+  begin
+    // Диагональный элемент не равен 0
+    if (matrix[row,row] <> 0) then
+    begin
+      for var col := 0 to rowsAmount - 1 do
+        if (col <> row) then
+        begin
+          var mult := matrix[col,row] / matrix[row,row];
+          for var i := 0 to rank do
+            matrix[col,i] -= mult * matrix[row,i];
+        end;
+        
+      row += 1;
+    end
+    else
+    begin
+      var reduce := true;
+      
+      for var i := row + 1 to rowsAmount - 1 do
+        if (matrix[i,row] <> 0) then
+        begin
+          rowSwap(matrix, row, i, rank);
+          reduce := false;
+          break;
+        end;
+        
+      if (reduce) then
+      begin
+        rank -= 1;
+        
+        for var i := 0 to rowsAmount - 1 do
+          matrix[i,row] := matrix[i,rank];
+      end;
+    end
+  end;
+  
+  Result := rank;
+end;  
 
 end.

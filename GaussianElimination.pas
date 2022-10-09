@@ -35,9 +35,21 @@ var
     rowX: new string[3] ('-x1', '-x2', '-x3');
     columnX: new string[3] ('0=', '0=', '0=');
   );
+  
+  matrixExample3 := new real[3, 4] (
+    (5.0, 1.0, 3.0,  -4.0),
+    (0.0, -1.0, 1.0,  1.0),
+    (9.0, 2.0, 1.0, 1.0)
+  );
+  
+  extendedMatrixExample3: ExtendedMatrix := (
+    baseMatrix: matrixExample3;
+    rowX: new string[3] ('-x1', '-x2', '-x3');
+    columnX: new string[3] ('0=', '0=', '0=');
+  );
 
 begin
-  extendedResultMatrix := extendedMatrixExample1;
+  extendedResultMatrix := extendedMatrixExample3;
   
   Writeln('Исходная матрица');
   extendedResultMatrix.Print();
@@ -70,7 +82,8 @@ begin
     // проверка противоречий
     for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) - 1 do
       if (
-        (rowSum(extendedResultMatrix.baseMatrix, i) - extendedResultMatrix.baseMatrix[i, 0] = 0)
+        (extendedResultMatrix.columnX[i] = '0=')
+        and (rowSum(extendedResultMatrix.baseMatrix, i) - extendedResultMatrix.baseMatrix[i, 0] = 0)
         and (extendedResultMatrix.baseMatrix[i, 0] <> 0)
       ) then
       begin
@@ -79,8 +92,7 @@ begin
       end;
       
     if (matrixTransformationCount >= rank) then
-    begin
-      for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) do
+      for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) - 1 do
         if (extendedResultMatrix.columnX[i] = '0=') then
         begin
           if (rowSum(extendedResultMatrix.baseMatrix, i) = 0) then
@@ -90,6 +102,13 @@ begin
             exit;
           end;
         end;
-    end;
+        
+    if (extendedResultMatrix.baseMatrix.GetLength(1) = 1) then
+    begin
+      Writeln('Ответ:');
+      for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) - 1 do
+        Writeln(extendedResultMatrix.columnX[i], ' ', extendedResultMatrix.baseMatrix[i, 0]);
+      exit;
+    end; 
   end;
 end.

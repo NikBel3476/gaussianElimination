@@ -49,13 +49,13 @@ var
   );
 
 begin
-  extendedResultMatrix := extendedMatrixExample3;
+  extendedResultMatrix := extendedMatrixExample2;
   
   Writeln('Исходная матрица');
   extendedResultMatrix.Print();
   
-  var rank := rank(copyMatrix(extendedResultMatrix.baseMatrix));
-  Writeln('Ранг матрицы = ', rank);
+//  var rank := rank(copyMatrix(extendedResultMatrix.baseMatrix));
+//  Writeln('Ранг матрицы = ', rank);
   matrixTransformationCount := 0;
   while (true) do
   begin
@@ -69,7 +69,7 @@ begin
     tempMatrix := gaussianElimination(extendedResultMatrix.baseMatrix, basicElementIndexes);
     extendedResultMatrix.baseMatrix := deleteColumn(tempMatrix, basicElementIndexes[1]);
     
-    extendedResultMatrix.columnX[basicElementIndexes[0]] := $'x{basicElementIndexes[1]}='; 
+    extendedResultMatrix.columnX[basicElementIndexes[0]] := extendedResultMatrix.rowX[basicElementIndexes[1] - 1].Substring(1) + '='; 
     extendedResultMatrix.rowX := extendedResultMatrix.rowX
                                   .Where((element, i) -> i <> basicElementIndexes[1] - 1).ToArray();
     
@@ -91,17 +91,16 @@ begin
         exit;
       end;
       
-    if (matrixTransformationCount >= rank) then
-      for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) - 1 do
-        if (extendedResultMatrix.columnX[i] = '0=') then
+    for var i := 0 to extendedResultMatrix.baseMatrix.GetLength(0) - 1 do
+      if (extendedResultMatrix.columnX[i] = '0=') then
+      begin
+        if (rowSum(extendedResultMatrix.baseMatrix, i) = 0) then
         begin
-          if (rowSum(extendedResultMatrix.baseMatrix, i) = 0) then
-          begin
-            Writeln('Ответ:');
-            printAnswer(extendedResultMatrix);
-            exit;
-          end;
+          Writeln('Ответ:');
+          printAnswer(extendedResultMatrix);
+          exit;
         end;
+      end;
         
     if (extendedResultMatrix.baseMatrix.GetLength(1) = 1) then
     begin
